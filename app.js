@@ -108,12 +108,20 @@ function checkPengguna(event, type){
                         Promise.resolve(null);
                     }else{
                         userdata.save(function(err, res){
-                            const echo = { 
-                                type: 'text', 
-                                text: 'beberapa perintah membutuhkan akses lebih sehingga kami menyediakan kode pengguna, kode pengguna anda '+randomKode 
-                            };
-                            client.replyMessage(event.replyToken, echo);
-                            pushHelp(event);
+                            if(res){
+                                const echo = { 
+                                    type: 'text', 
+                                    text: 'beberapa perintah membutuhkan akses lebih sehingga kami menyediakan kode pengguna, kode pengguna anda '+randomKode 
+                                };
+                                client.replyMessage(event.replyToken, echo);
+                                pushHelp(event);
+                            }else{
+                                const echo = { 
+                                    type: 'text', 
+                                    text: 'Kesalahan, ketika saya mencoba menyimpan data anda' 
+                                };
+                                client.replyMessage(event.replyToken, echo);
+                            }
                         });
                     }
                 });
