@@ -83,8 +83,9 @@ function handleEvent(event){
 }
 
 function simiSync(event){
-    SimiModel.findOne({'jika': { $contains: event.message.text}}, function(err, res){
+    SimiModel.find({}, function(err, res){
         if(res){
+            console.log(res);
             const echo = { 
                 type: 'text', 
                 text: res.jawab
