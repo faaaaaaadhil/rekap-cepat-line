@@ -52,7 +52,9 @@ function handleEvent(event){
 
     if(event.message.type == 'text'){
         let keyword = event.message.text.toLowerCase();
-        if(keyword.includes('!saveme') || keyword.includes('!s')){
+        if(keyword.includes('!simi')){
+            console.log('Simi terpanggil');
+        }else if(keyword.includes('!saveme')){
             console.log('save terpanggil');
             checkPengguna(event, true);
         }else if(keyword.includes('!toko') || keyword.includes('!tk')){
@@ -67,8 +69,6 @@ function handleEvent(event){
         }else if(keyword.includes('!help') || keyword.includes('!h')){
             console.log('help terpanggil');
             pushHelp(event);
-        }else if(keyword.includes('!simi')){
-            console.log('Simi terpanggil');
         }else{
             console.log('anything terpanggil');
             simiSync(event);
