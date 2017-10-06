@@ -85,10 +85,16 @@ function handleEvent(event){
 function simiSync(event){
     SimiModel.find({}, function(err, res){
         if(res){
-            console.log(res);
+            console.log(res.length);
+
+            let msggg = '';
+            for (let i = 0; i < res.length; i++){
+                msggg = res[i].jawab;
+            }
+
             const echo = { 
                 type: 'text', 
-                text: res.jawab
+                text: msggg
             };
             return client.replyMessage(event.replyToken, echo);
         }else{
