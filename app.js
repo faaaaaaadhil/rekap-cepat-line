@@ -102,12 +102,12 @@ function simiSave(event, data){
     let data0 = exec[0];
     let data1 = exec[1];
 
-    let data = {
+    let kurama = {
         'userIds': event.source.userId.toString(),
         'jika': data0.toString(),
         'jawab': data1.toString()
     }
-    let simisimi = new SimiModel(data);
+    let simisimi = new SimiModel(kurama);
     SimiModel.findOne({'userIds': event.source.userId}, function(err, res){
         if(res){
             const echo = { 
