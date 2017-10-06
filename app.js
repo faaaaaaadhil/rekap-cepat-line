@@ -35,7 +35,7 @@ app.post('/webhook', line.middleware(config), function(req, res){
 });
 
 function handleEvent(event){
-    const userRef = db.child("users");
+    const userRef = ref.child("users");
     userRef.set({
         alanisawesome: {
           date_of_birth: "June 23, 1912",
