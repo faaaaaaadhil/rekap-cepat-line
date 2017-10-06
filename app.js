@@ -41,7 +41,7 @@ function handleEvent(event){
       })
       stream.on('end', function(){
 
-          var msg = Buffer.concat(chunks);
+          var msg = Buffer.concat(chunks).toString('base64');
           console.log(msg);
           var data = fs.createReadStream(msg);
           console.log("DATA : " + data);
