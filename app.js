@@ -42,7 +42,7 @@ function handleEvent(event){
     }
 
     if(event.message.type == 'text'){
-        const keyword = event.message.text.toLowerCase();
+        let keyword = event.message.text.toLowerCase();
         if(keyword.includes('\saveme') || keyword.includes('\s')){
             checkPengguna(event, true);
         }else if(keyword.includes('\toko') || keyword.includes('\tk')){
@@ -68,9 +68,9 @@ function checkPengguna(event, type){
     if(!type){
         client.getProfile(event.source.userId)
             .then((profile) => {
-                const pictureUrl = profile.pictureUrl;
-                const statusMessage = profile.statusMessage;
-                const randomKode = Math.random(1000,9999);
+                let pictureUrl = profile.pictureUrl;
+                let statusMessage = profile.statusMessage;
+                let randomKode = Math.random(1000,9999);
         
                 if(pictureUrl == undefined){
                     pictureUrl = '';
@@ -82,7 +82,7 @@ function checkPengguna(event, type){
             
                 let data = {
                     'displayName': profile.displayName,
-                    "userIds": profile.userId,
+                    'userIds': profile.userId,
                     'pictureUrl': pictureUrl,
                     'statusMessage': statusMessage,
                     'namaToko': '',
@@ -113,9 +113,9 @@ function checkPengguna(event, type){
     }else if(type){
         client.getProfile(event.source.userId)
             .then((profile) => {
-                const pictureUrl = profile.pictureUrl;
-                const statusMessage = profile.statusMessage;
-                const randomKode = Math.random(1000,9999);
+                let pictureUrl = profile.pictureUrl;
+                let statusMessage = profile.statusMessage;
+                let randomKode = Math.random(1000,9999);
 
                 if(pictureUrl == undefined){
                     pictureUrl = '';
@@ -154,7 +154,7 @@ function checkPengguna(event, type){
 
 //jika true = update or false = tambah
 function setToko(event, tk){
-    const namaToko = tk;
+    let namaToko = tk;
     UserModel.findOne({'userIds': event.source.userId}, function(err, res){
         if(res){
             UserModel.findOneAndUpdate({ '_id': res._id }, { $set: { 'namaToko': namaToko } }, 
@@ -162,7 +162,7 @@ function setToko(event, tk){
                 if(res){
                     const echo = { 
                         type: 'text', 
-                        text: "Berhasil, sekarang nama toko anda adalah "+ namaToko 
+                        text: 'Berhasil, sekarang nama toko anda adalah '+ namaToko 
                     };
                     return client.replyMessage(event.replyToken, echo);
                 }else{                
@@ -182,12 +182,12 @@ function setToko(event, tk){
 
 //{nama produk},{harga produk},{stok produk} or {nama produk},{stok}
 function setProduct(event, data){
-    const exec = data;
+    let exec = data;
     exec = exec.split(',');
 
-    const data0 = exec[0];
-    const data1 = exec[1];
-    const data2 = exec[2];
+    let data0 = exec[0];
+    let data1 = exec[1];
+    let data2 = exec[2];
 
     if(data2 == undefined || data2 == null){
         ProductModel.findOneAndUpdate({'findName': data0.toLowerCase()}, { $set: { 'stokbarang': data2.toString() } }, function(err, res){
@@ -248,18 +248,18 @@ function setProduct(event, data){
 }
 
 function minProduk(event, data){
-    const exec = data;
+    let exec = data;
     exec = exec.split(',');
 
-    const data0 = exec[0];
-    const data1 = exec[1];
+    let data0 = exec[0];
+    let data1 = exec[1];
 
     ProductModel.findOne({'findName': data0.toLowerCase()}, 
     function(err, res){
         if(res){
-            const stokbarang = res.barang;
-            const terjual = res.terjual;
-            const status = 'masih';
+            let stokbarang = res.barang;
+            let terjual = res.terjual;
+            let status = 'masih';
             if(data1 == undefined || data1 == null){
                 stokbarang = parseInt(stokbarang) - 1;
                 terjual = parseInt(terjual) + 1;
@@ -316,8 +316,8 @@ function pushHelp(event){
 
 // data = \saveme,\s,\toko,\tk,\add,\tambah,\a,\t,\min,\laku,\m,\l,\help,\h
 function getContext(event){
-    const textnya = '';
-    const dataText = event.message.text.toLowerCase();
+    let textnya = '';
+    let dataText = event.message.text.toLowerCase();
     if(dataText.includes('\saveme')){
         textnya = '\saveme';
     }else if(dataText.includes('\s')){
