@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "@line/bot-sdk": "^3.1.1",
+    "dropbox": "^2.5.11",
     "express": "^4.16.1",
     "firebase-admin": "^5.4.1",
     "google-auth-library": "^0.11.0",
@@ -13,7 +14,7 @@
     "morgan": "^1.9.0"
   },
   "scripts": {
-    "start": "node quickstart.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
