@@ -32,13 +32,15 @@ function handleEvent(event){
     client.getMessageContent(event.message.id)
     .then((stream) => {
       stream.on('data', (chunk) => {
-        dropbox.filesUpload({ path: '/test.jpg', contents: chunk })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
+          fs.readFile(chunk, function(err, data){
+            dropbox.filesUpload({ path: '/test.jpg', contents: data })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+          })
       })
       stream.on('error', (err) => {
         console.log(err);
@@ -46,7 +48,6 @@ function handleEvent(event){
     //   stream.pipe()
     //   })
     })
-    
 }
 
 const port = process.env.PORT || 3000;
