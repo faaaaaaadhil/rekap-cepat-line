@@ -311,7 +311,7 @@ function pushHelp(event){
     const echo = { 
         type: 'text', 
         text: 'berikut perintah penggunaan bot \n'+
-        '!h -> melihat perintah penggunaan \n'+
+        '<b>!h</b> -> melihat perintah penggunaan \n'+
         '!saveme -> menyimpan profile anda \n'+
         '!toko {nama toko} -> menyimpan nama toko anda \n'+
         '!add or !tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok} \n'+
