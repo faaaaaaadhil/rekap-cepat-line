@@ -83,7 +83,7 @@ function handleEvent(event){
 }
 
 function simiSync(event){
-    SimiModel.findOne({'jika': new RegExp('^'+event.message.text+'$', "i")}, function(err, res){
+    SimiModel.findOne({'jika': { $contains: event.message.text}}, function(err, res){
         if(res){
             const echo = { 
                 type: 'text', 
