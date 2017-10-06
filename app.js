@@ -43,7 +43,7 @@ function handleEvent(event){
 
           var msg = Buffer.concat(chunks);
           console.log(msg);
-          var data = fs.readFileSync(msg);
+          var data = fs.createReadStream(msg);
           console.log("DATA : " + data);
           dropbox.filesUpload({ path: '/test.jpg', contents: data })
           .then(function (response) {
