@@ -7,10 +7,13 @@
     "@line/bot-sdk": "^3.1.1",
     "express": "^4.16.1",
     "firebase-admin": "^5.4.1",
+    "google-auth-library": "^0.11.0",
+    "googleapis": "^22.2.0",
+    "mongoose": "^4.12.0",
     "morgan": "^1.9.0"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node quickstart.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
