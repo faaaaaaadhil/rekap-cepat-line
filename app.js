@@ -44,20 +44,27 @@ function handleEvent(event){
     if(event.message.type == 'text'){
         let keyword = event.message.text.toLowerCase();
         if(keyword.includes('\saveme') || keyword.includes('\s')){
+            console.log('save terpanggil');
             checkPengguna(event, true);
         }else if(keyword.includes('\toko') || keyword.includes('\tk')){
+            console.log('toko terpanggil');
             setToko(event, getContext(event));
         }else if(keyword.includes('\add') || keyword.includes('\tambah') || keyword.includes('\a') || keyword.includes('\t')){
+            console.log('setproduk terpanggil');
             setProduct(event, getContext(event));
         }else if(keyword.includes('\min') || keyword.includes('\laku') || keyword.includes('\m') || keyword.includes('\l')){
+            console.log('minproduk terpanggil');           
             minProduk(event, getContext(event));
         }else if(keyword.includes('\help') || keyword.includes('\h')){
+            console.log('help terpanggil');
             pushHelp(event);
         }else{
+            console.log('anything terpanggil');
             pushHelp(event);
         }
         // else if(keyword.includes('\image') || keyword.includes('\pic') || keyword.includes('\img') || keyword.includes('\i')){}
     }else{
+        console.log('anything terpanggil');
         pushHelp(event);
     }
     // else if(event.message.type == 'image'){}
