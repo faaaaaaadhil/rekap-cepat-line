@@ -41,11 +41,8 @@ function handleEvent(event){
       })
       stream.on('end', function(){
 
-          var msg = Buffer.concat(chunks).toString('base64');
-          console.log(msg);
-        fs.readFile(msg, function(err, data){
-            console.log(data)
-            dropbox.filesUpload({ path: '/test.jpg', contents: data })
+          var msg = Buffer.concat(chunks);
+        dropbox.filesUpload({ path: '/test.jpg', contents: data })
             .then(function (response) {
               console.log(response);
             })
