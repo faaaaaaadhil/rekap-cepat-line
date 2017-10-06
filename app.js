@@ -95,9 +95,9 @@ function simiSync(event){
                 msggg = res[i].jawab;
                 msggr = res[i].jika;
                 if(pertanyaan.includes(msggg)){
-                    jawaban = msggg;
-                }else if(pertanyaan.includes(msggr)){
                     jawaban = msggr;
+                }else if(pertanyaan.includes(msggr)){
+                    jawaban = msggg;
                 }
             }
 
