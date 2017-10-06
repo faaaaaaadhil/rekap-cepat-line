@@ -111,10 +111,9 @@ function checkPengguna(event, type){
                             if(res){
                                 const echo = { 
                                     type: 'text', 
-                                    text: 'beberapa perintah membutuhkan akses lebih sehingga kami menyediakan kode pengguna, kode pengguna anda '+randomKode 
+                                    text: 'beberapa perintah membutuhkan akses lebih sehingga kami menyediakan kode pengguna, kode pengguna anda '+randomKode+''+setting.help
                                 };
-                                client.replyMessage(event.replyToken, echo);
-                                pushHelp(event);
+                                client.replyMessage(event.replyToken, echo);                            
                             }else{
                                 const echo = { 
                                     type: 'text', 
@@ -209,7 +208,6 @@ function setProduct(event, data){
     let data0 = exec[0];
     let data1 = exec[1];
     let data2 = exec[2];
-
 
     if(data2 == undefined || data2 == null){
         ProductModel.findOneAndUpdate({'findName': data0.toLowerCase()}, { $set: { 'stokbarang': data1.toString() } }, function(err, res){
