@@ -49,3 +49,8 @@ function handleEvent(event){
     const echo = { type: 'sticker', stickerId: event.message.stickerId, packageId: event.message.packageId };
     return clientLine.replyMessage(event.replyToken, echo);
 }
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`listening on ${port}`);
+});
