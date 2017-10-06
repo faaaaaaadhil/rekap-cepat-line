@@ -210,8 +210,9 @@ function setProduct(event, data){
     let data1 = exec[1];
     let data2 = exec[2];
 
+
     if(data2 == undefined || data2 == null){
-        ProductModel.findOneAndUpdate({'findName': data0.toLowerCase()}, { $set: { 'stokbarang': data2.toString() } }, function(err, res){
+        ProductModel.findOneAndUpdate({'findName': data0.toLowerCase()}, { $set: { 'stokbarang': data1.toString() } }, function(err, res){
             if(res){
                 const echo = { 
                     type: 'text', 
