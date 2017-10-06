@@ -13,6 +13,7 @@ const setting = require('./setting');
 
 const UserModel = require('./model/User');
 const ProductModel = require('./model/Product');
+const SimiModel = require('./model/Simi');
 
 const dropbox = new drx({ accessToken: setting.dropboxAccessToken});
 
@@ -32,6 +33,10 @@ app.post(setting.webhook, line.middleware(setting.line), function(req, res){
       .all(req.body.events.map(handleEvent))
       .then((result) => res.json(result));    
 });
+
+app.post('/simi', function(req, res){
+
+})
 
 function handleEvent(event){
     console.log('Dropbox Status : ' + dropbox);
@@ -62,16 +67,72 @@ function handleEvent(event){
         }else if(keyword.includes('!help') || keyword.includes('!h')){
             console.log('help terpanggil');
             pushHelp(event);
+        }else if(keyword.includes('!simi')){
+            console.log('Simi terpanggil');
         }else{
             console.log('anything terpanggil');
-            pushHelp(event);
+            simiSync(event);
         }
         // else if(keyword.includes('!image') || keyword.includes('!pic') || keyword.includes('!img') || keyword.includes('!i')){}
     }else{
         console.log('anything terpanggil');
-        pushHelp(event);
+        simiSync(event);
     }
     // else if(event.message.type == 'image'){}
+}
+
+function simiSync(event){
+    SimiModel.findOne({'jika': { $regex: '.*' + event.message.text + '.*'}}, function(err, res){
+        if(res){
+            const echo = { 
+                type: 'text', 
+                text: res.jawab
+            };
+            return client.replyMessage(event.replyToken, echo);
+        }else{
+            pushHelp(event);
+        }
+    })
+}
+
+function simiSave(event, data){
+    let exec = data;
+    exec = exec.split(',');
+
+    let data0 = exec[0];
+    let data1 = exec[1];
+
+    let data = {
+        'userIds': String,
+        'jika': String,
+        'jawab': String
+    }
+    let simisimi = new SimiModel(data);
+    SimiModel.findOne({'userIds': event.source.userId}, function(err, res){
+        if(res){
+            const echo = { 
+                type: 'text', 
+                text: 'Sudah ada boss :D'
+            };
+            return client.replyMessage(event.replyToken, echo);
+        }else {
+            simisimi.save(function(err, res){
+                if(res){
+                    const echo = { 
+                        type: 'text', 
+                        text: 'Terimakasih boss udah ngajarin :D'
+                    };
+                    return client.replyMessage(event.replyToken, echo);
+                }else {
+                    const echo = { 
+                        type: 'text', 
+                        text: 'Error bos :D'
+                    };
+                    return client.replyMessage(event.replyToken, echo);
+                }
+            })
+        }
+    })
 }
 
 //jika true = update or false = tambah
@@ -267,6 +328,7 @@ function setProduct(event, data){
     }
 }
 
+
 function minProduk(event, data){
     let exec = data;
     exec = exec.split(',');
@@ -324,7 +386,7 @@ function pushHelp(event){
     const echo = { 
         type: 'text', 
         text: 'berikut perintah penggunaan bot \n'+
-        '<b>!h</b> -> melihat perintah penggunaan \n'+
+        '!h -> melihat perintah penggunaan \n'+
         '!saveme -> menyimpan profile anda \n'+
         '!toko {nama toko} -> menyimpan nama toko anda \n'+
         '!add or !tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok} \n'+

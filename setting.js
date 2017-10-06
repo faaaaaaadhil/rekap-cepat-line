@@ -7,5 +7,5 @@ module.exports = {
     'webhook': '/webhook',
     'build': 'dev',
     'port': 3000,
-    'help': ', untuk melihat panduan pengguna bisa melalui \h atau \help'
+    'help': ', untuk melihat panduan pengguna bisa melalui !h atau !help'
 }
