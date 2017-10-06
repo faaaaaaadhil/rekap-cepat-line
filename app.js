@@ -311,12 +311,13 @@ function pushHelp(event){
     const echo = { 
         type: 'text', 
         text: 'berikut perintah penggunaan bot \n'+
+        '\h -> melihat perintah penggunaan \n'+
         '\saveme -> menyimpan profile anda \n'+
-        '\toko {nama toko} -> menyimpan nama toko anda'+
-        '\add or \tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok}'+
-        '\laku or \min {nama produk} or {np},{jmllaku} -> mengurangi stok produk anda'+
-        '\image {kode},{produk},{image} -> menambah image pada produk'+
-        '\report {pdf} or {docs} or {excel} -> melihat report penjualan'
+        '\toko {nama toko} -> menyimpan nama toko anda \n'+
+        '\add or \tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok} \n'+
+        '\laku or \min {nama produk} or {np},{jmllaku} -> mengurangi stok produk anda \n'+
+        '\image {kode},{produk},{image} -> menambah image pada produk \n'+
+        '\report {pdf} or {docs} or {excel} -> melihat report penjualan \n'
     };
     return client.replyMessage(event.replyToken, echo);
 }
