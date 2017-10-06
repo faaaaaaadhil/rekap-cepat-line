@@ -7,9 +7,9 @@ let ProductSchema = new Schema({
     displayName: String, //Tas ransel
     findName: String,
     harga: String,//Rp. 100.000
-    stokbarang: String,//9
+    barang: String,//9
     terjual: String, //10
-    statusMessage: String //habis - masih
+    status: String //habis - masih
 }, { timestamps: true }, { collection: 'product' });
 
 module.exports = mongoose.model('product', ProductSchema);

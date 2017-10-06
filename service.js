@@ -160,6 +160,27 @@ module.exports = {
             }
         })
     },
+
+    const chunks = [];
+    client.getMessageContent(event.message.id)
+        .then((stream) => {
+            stream.on('data', (chunk) => {
+                chunks.push(chunk);
+            })
+            stream.on('error', (err) => {
+                console.log(err);
+            })
+            stream.on('end', function(){
+                var msg = Buffer.concat(chunks);
+                dropbox.filesUpload({ path: '/test.png', contents: msg })
+                .then(function (response) {
+                    console.log(response);
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        })
+    })
     listBarang(event, client){
         ProductModel.find({}, function(err, res){
             if(res){

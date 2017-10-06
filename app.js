@@ -7,20 +7,22 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const drx = require('dropbox');
 const fs = require('fs');
+const setting = require('./setting');
 
-const dropbox = new drx({ accessToken: '6N6VX7AUflAAAAAAAAAAFNYtTdxYjRpGQrVoRVwqJlP7pXxOJNJguBWeVCSA-CYQ' });
-const config = {
-    channelAccessToken: "m6oMTBwJCVIChmaV5Ek7uCVaq6CTNmm71Dg/OwJoOHFl59GAXah/4gaz5QFYaYrRtNrU8iucgzu1FIYlH2k5kTI1L+sug8gkVUZ+NO8Ll4qmICGSQKBidrAzK2q424lv5Jp/aGnmtXiOmSLtGn/IjQdB04t89/1O/w1cDnyilFU=",
-    channelSecret: "03964adaec21355bf3f78f058079ab03",
-};
+//model
 
-const client = new line.Client(config);
+const UserModel = require('./model/User');
+const ProductModel = require('./model/Product');
+
+const dropbox = new drx({ accessToken: setting.dropboxAccessToken});
+
+const client = new line.Client(setting.line);
 
 const app = express();
 app.use(bodyParser.raw());
-app.use(logger('dev'));
+app.use(logger(setting.build));
 
-app.post('/webhook', line.middleware(config), function(req, res){
+app.post(setting.webhook, line.middleware(setting.line), function(req, res){
     console.log(req.body.events);
     Promise
       .all(req.body.events.map(handleEvent))
@@ -29,33 +31,329 @@ app.post('/webhook', line.middleware(config), function(req, res){
 
 function handleEvent(event){
     console.log('Dropbox Status : ' + dropbox);
-    const chunks = [];
-    client.getMessageContent(event.message.id)
-    .then((stream) => {
-    //   stream.setEncoding('utf8');
-      stream.on('data', (chunk) => {
-          chunks.push(chunk);
-      })
-      stream.on('error', (err) => {
-        console.log(err);
-      })
-      stream.on('end', function(){
+    console.log('Line Status : ' + line);
+    console.log('Event Log :' + event);
 
-          var msg = Buffer.concat(chunks);
-        dropbox.filesUpload({ path: '/test.png', contents: msg })
-            .then(function (response) {
-              console.log(response);
+    //indentifikasi pengguna baru atau bukan
+    checkPengguna(event, false);
+
+    if (event.type !== 'message') {
+        return Promise.resolve(null);
+    }
+
+    if(event.message.type == 'text'){
+        const keyword = event.message.text.toLowerCase();
+        if(keyword.includes('\saveme') || keyword.includes('\s')){
+            checkPengguna(event, true);
+        }else if(keyword.includes('\toko') || keyword.includes('\tk')){
+            setToko(event, getContext(event));
+        }else if(keyword.includes('\add') || keyword.includes('\tambah') || keyword.includes('\a') || keyword.includes('\t')){
+            setProduct(event, getContext(event));
+        }else if(keyword.includes('\min') || keyword.includes('\laku') || keyword.includes('\m') || keyword.includes('\l')){
+            minProduk(event, getContext(event));
+        }else if(keyword.includes('\help') || keyword.includes('\h')){
+            pushHelp(event);
+        }else{
+            pushHelp(event);
+        }
+        // else if(keyword.includes('\image') || keyword.includes('\pic') || keyword.includes('\img') || keyword.includes('\i')){}
+    }else{
+        pushHelp(event);
+    }
+    // else if(event.message.type == 'image'){}
+}
+
+//jika true = update or false = tambah
+function checkPengguna(event, type){
+    if(!type){
+        client.getProfile(event.source.userId)
+            .then((profile) => {
+                const pictureUrl = profile.pictureUrl;
+                const statusMessage = profile.statusMessage;
+                const randomKode = Math.random(1000,9999);
+        
+                if(pictureUrl == undefined){
+                    pictureUrl = '';
+                }
+            
+                if(statusMessage == undefined){
+                    statusMessage = '';
+                }
+            
+                let data = {
+                    'displayName': profile.displayName,
+                    "userIds": profile.userId,
+                    'pictureUrl': pictureUrl,
+                    'statusMessage': statusMessage,
+                    'namaToko': '',
+                    'kode': randomKode.toString()
+                }; 
+                
+                let userdata = new UserModel(data);
+                UserModel.findOne({'userIds': profile.userId}, 
+                function(err, res){
+                    if(res){
+                        Promise.resolve(null);
+                    }else{
+                        userdata.save(function(err, res){
+                            const echo = { 
+                                type: 'text', 
+                                text: 'beberapa perintah membutuhkan akses lebih sehingga kami menyediakan kode pengguna, kode pengguna anda '+randomKode 
+                            };
+                            client.replyMessage(event.replyToken, echo);
+                            pushHelp(event);
+                        });
+                    }
+                });
             })
-            .catch(function (err) {
-              console.log(err);
+            .catch((err) => {
+                console.log(err);
+                Promise.resolve(null);
             });
-        })
-    //   stream.pipe()
-    //   })
+    }else if(type){
+        client.getProfile(event.source.userId)
+            .then((profile) => {
+                const pictureUrl = profile.pictureUrl;
+                const statusMessage = profile.statusMessage;
+                const randomKode = Math.random(1000,9999);
+
+                if(pictureUrl == undefined){
+                    pictureUrl = '';
+                }
+            
+                if(statusMessage == undefined){
+                    statusMessage = '';
+                }
+                
+                UserModel.findOne({'userIds': event.source.userId}, 
+                function(err, res){
+                    if(res){
+                        UserModel.findOneAndUpdate({ '_id': res._id }, { $set: { 'displayName': profile.displayName, 'pictureUrl': pictureUrl, 'statusMessage': statusMessage, 'kode': randomKode.toString()} }, 
+                        function(err, res){
+                            if(res){
+                                const echo = { 
+                                    type: 'text', 
+                                    text: 'untuk memperbarui keamanan saya membuat ulang kode pengguna anda, kode pengguna anda '+randomKode 
+                                };
+                                return client.replyMessage(event.replyToken, echo);
+                            }else{
+                                checkPengguna(event, false);
+                            }
+                        })
+                    }else{
+                        checkPengguna(event, false);
+                    }
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+                Promise.resolve(null);
+            });
+    }
+}
+
+//jika true = update or false = tambah
+function setToko(event, tk){
+    const namaToko = tk;
+    UserModel.findOne({'userIds': event.source.userId}, function(err, res){
+        if(res){
+            UserModel.findOneAndUpdate({ '_id': res._id }, { $set: { 'namaToko': namaToko } }, 
+            function(err, res){
+                if(res){
+                    const echo = { 
+                        type: 'text', 
+                        text: "Berhasil, sekarang nama toko anda adalah "+ namaToko 
+                    };
+                    return client.replyMessage(event.replyToken, echo);
+                }else{                
+                    const echo = { 
+                        type: 'text', 
+                        text: 'Kesalahan, dalam mengganti nama toko anda'+setting.help
+                    };
+                    return client.replyMessage(event.replyToken, echo);
+                }
+            })
+        }else{
+            console.log(err);
+            checkPengguna(event, false);
+        }
     })
 }
 
-const port = process.env.PORT || 3000;
+//{nama produk},{harga produk},{stok produk} or {nama produk},{stok}
+function setProduct(event, data){
+    const exec = data;
+    exec = exec.split(',');
+
+    const data0 = exec[0];
+    const data1 = exec[1];
+    const data2 = exec[2];
+
+    if(data2 == undefined || data2 == null){
+        ProductModel.findOneAndUpdate({'findName': data0.toLowerCase()}, { $set: { 'stokbarang': data2.toString() } }, function(err, res){
+            if(res){
+                const echo = { 
+                    type: 'text', 
+                    text: 'barang sudah di update'+setting.help
+                };
+                return client.replyMessage(event.replyToken, echo);
+            }else{
+                const echo = { 
+                    type: 'text', 
+                    text: 'Kesalahan, pastikan penulisan dengan benar'+setting.help
+                };
+                return client.replyMessage(event.replyToken, echo);
+            }
+        })
+    }else{
+        let data = {
+            'displayName': data0.toString(),
+            'findName': data0.toLowerCase(),
+            'harga': data1.toString(),
+            'barang': data2.toString(),
+            'terjual': '0',
+            'status': 'masih'
+        };
+
+        let barang = new ProductModel(data);
+        ProductModel.findOne({'findName': data0.toLowerCase()}, 
+        function(err, res){
+            if(res){
+                const echo = { 
+                    type: 'text', 
+                    text: 'barang yang anda masukan sudah ada'+setting.help
+                };
+                return client.replyMessage(event.replyToken, echo);
+            }else{
+                console.log(err);
+                barang.save(function(err, res){
+                    if(res){
+                        const echo = { 
+                            type: 'text', 
+                            text: 'barang sudah tersimpan'+setting.help 
+                        };
+                        return client.replyMessage(event.replyToken, echo);
+                    }else{
+                        console.log(err);
+                        const echo = { 
+                            type: 'text', 
+                            text: 'Kesalahan, dalam menambah barang anda'+setting.help
+                        };
+                        return client.replyMessage(event.replyToken, echo);
+                    }
+                })
+            }
+        })
+    }
+}
+
+function minProduk(event, data){
+    const exec = data;
+    exec = exec.split(',');
+
+    const data0 = exec[0];
+    const data1 = exec[1];
+
+    ProductModel.findOne({'findName': data0.toLowerCase()}, 
+    function(err, res){
+        if(res){
+            const stokbarang = res.barang;
+            const terjual = res.terjual;
+            const status = 'masih';
+            if(data1 == undefined || data1 == null){
+                stokbarang = parseInt(stokbarang) - 1;
+                terjual = parseInt(terjual) + 1;
+            }else {
+                stokbarang = parseInt(stokbarang) - parseInt(data1+'');
+                terjual = parseInt(terjual) + parseInt(data1+'');
+            }
+            
+            if(stokbarang > 0){
+                status = 'masih';
+            }else{
+                status = 'habis';
+            }
+
+            ProductModel.findOneAndUpdate({'findName': data0.toLowerCase()}, { $set: { 'barang': stokbarang, 'terjual': terjual, 'status': status } }, 
+            function(err, res){
+                if(res){
+                    const echo = { 
+                        type: 'text', 
+                        text: 'Berhasil, stok barang anda '+status+' dengan total barang terjual '+terjual+' barang'
+                    };
+                    return client.replyMessage(event.replyToken, echo);
+                }else{
+                    const echo = { 
+                        type: 'text', 
+                        text: 'Kesalahan, pastikan penulisan dengan benar'+setting.help
+                    };
+                    return client.replyMessage(event.replyToken, echo);
+                }
+            })
+        }else{
+            const echo = { 
+                type: 'text', 
+                text: 'barang yang anda masukan belum terdaftar'+setting.help
+            };
+            return client.replyMessage(event.replyToken, echo);
+        }
+    })
+}
+
+function pushHelp(event){
+    const echo = { 
+        type: 'text', 
+        text: 'berikut perintah penggunaan bot \n'+
+        '\saveme -> menyimpan profile anda \n'+
+        '\toko {nama toko} -> menyimpan nama toko anda'+
+        '\add or \tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok}'+
+        '\laku or \min {nama produk} or {np},{jmllaku} -> mengurangi stok produk anda'+
+        '\image {kode},{produk},{image} -> menambah image pada produk'+
+        '\report {pdf} or {docs} or {excel} -> melihat report penjualan'
+    };
+    return client.replyMessage(event.replyToken, echo);
+}
+
+// data = \saveme,\s,\toko,\tk,\add,\tambah,\a,\t,\min,\laku,\m,\l,\help,\h
+function getContext(event){
+    const textnya;
+    const dataText = event.message.text.toLowerCase();
+    if(dataText.includes('\saveme')){
+        textnya = '\saveme';
+    }else if(dataText.includes('\s')){
+        textnya = '\s';
+    }else if(dataText.includes('\toko')){
+        textnya = '\toko';
+    }else if(dataText.includes('\tk')){
+        textnya = '\tk';
+    }else if(dataText.includes('\add')){
+        textnya = '\add';
+    }else if(dataText.includes('\tambah')){
+        textnya = '\tambah';
+    }else if(dataText.includes('\a')){
+        textnya = '\a';
+    }else if(dataText.includes('\t')){
+        textnya = '\t';
+    }else if(dataText.includes('\min')){
+        textnya = '\min';
+    }else if(dataText.includes('\laku')){
+        textnya = '\laku';
+    }else if(dataText.includes('\m')){
+        textnya = '\m';
+    }else if(dataText.includes('\l')){
+        textnya = '\l';
+    }else if(dataText.includes('\help')){
+        textnya = '\help';
+    }else if(dataText.includes('\h')){
+        textnya = '\h';
+    }
+    dataText = dataText.trim();
+    dataText = dataText.replace(textnya.toString(),'');
+    dataText = dataText.trim();
+    return dataText;
+}
+
+const port = process.env.PORT || setting.port;
 app.listen(port, () => {
-  console.log('listening on ${port}');
+  console.log(`listening on ${port}`);
 });

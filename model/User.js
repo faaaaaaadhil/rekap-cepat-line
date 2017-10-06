@@ -8,7 +8,8 @@ let UserSchema = new Schema({
     userIds: String,
     pictureUrl: String,
     statusMessage: String,
-    namaToko: String
+    namaToko: String,
+    kode: String
 }, { timestamps: true }, { collection: 'user' });
 
 module.exports = mongoose.model('user', UserSchema);
