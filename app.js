@@ -6,6 +6,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const drx = require('dropbox');
+const fs = require('fs');
 
 const dropbox = new drx({ accessToken: '6N6VX7AUflAAAAAAAAAAFNYtTdxYjRpGQrVoRVwqJlP7pXxOJNJguBWeVCSA-CYQ' });
 const config = {
@@ -23,14 +24,32 @@ app.post('/webhook', line.middleware(config), function(req, res){
     console.log(req.body.events);
     Promise
       .all(req.body.events.map(handleEvent))
-      .then((result) => res.json(result));
+      .then((result) => res.json(result));    
 });
 
 function handleEvent(event){
-    console.log('Dropbox Status : ' + dropbox.usersGetAccount.name);
+    console.log('Dropbox Status : ' + dropbox);
+    client.getMessageContent(event.message.id)
+    .then((stream) => {
+      stream.on('data', (chunk) => {
+        dropbox.filesUpload({ path: '/test.jpg', contents: chunk })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+      })
+      stream.on('error', (err) => {
+        console.log(err);
+      })
+    //   stream.pipe()
+    //   })
+    })
+    
 }
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`listening on ${port}`);
+  console.log('listening on ${port}');
 });
