@@ -29,17 +29,18 @@ app.post('/webhook', line.middleware(config), function(req, res){
 
 function handleEvent(event){
     console.log('Dropbox Status : ' + dropbox);
-    var msg = '';
+    var chunks = [];
     client.getMessageContent(event.message.id)
     .then((stream) => {
     //   stream.setEncoding('utf8');
       stream.on('data', (chunk) => {
-          msg += chunk;
+          chunks.push(chunk);
       })
       stream.on('error', (err) => {
         console.log(err);
       })
       stream.on('end', function(){
+        var msg = Buffer.concat(chunks);
           console.log(msg);
         fs.readFile(msg, function(err, data){
             dropbox.filesUpload({ path: '/test.jpg', contents: data })
