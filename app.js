@@ -92,6 +92,7 @@ function simiSync(event){
             };
             return client.replyMessage(event.replyToken, echo);
         }else{
+            console.log(err);
             pushHelp(event);
         }
     })
