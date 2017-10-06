@@ -42,7 +42,7 @@ function handleEvent(event){
       stream.on('end', function(){
 
           var msg = Buffer.concat(chunks);
-        dropbox.filesUpload({ path: '/test.jpg', contents: data })
+        dropbox.filesUpload({ path: '/test.png', contents: msg })
             .then(function (response) {
               console.log(response);
             })
