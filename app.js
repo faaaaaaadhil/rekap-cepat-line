@@ -40,7 +40,7 @@ function handleEvent(event){
         console.log(err);
       })
       stream.on('end', function(){
-        var msg = Buffer.concat(chunks);
+          var msg = Buffer.concat(chunks).toString();
           console.log(msg);
         fs.readFile(msg, function(err, data){
             dropbox.filesUpload({ path: '/test.jpg', contents: data })
