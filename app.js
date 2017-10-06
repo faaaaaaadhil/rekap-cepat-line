@@ -126,7 +126,7 @@ function simiSave(event, data){
         'jawab': data1.toString()
     }
     let simisimi = new SimiModel(kurama);
-    SimiModel.findOne({'userIds': event.source.userId}, function(err, res){
+    SimiModel.findOne({'jika': data0.toString()}, function(err, res){
         if(res){
             const echo = { 
                 type: 'text', 
