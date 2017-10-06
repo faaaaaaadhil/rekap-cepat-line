@@ -88,13 +88,22 @@ function simiSync(event){
             console.log(res.length);
 
             let msggg = '';
+            let msggr = '';
+            let pertanyaan = event.message.text;
+            let jawaban = 'Kosong bro';
             for (let i = 0; i < res.length; i++){
                 msggg = res[i].jawab;
+                msggr = res[i].jika;
+                if(pertanyaan.includes(msggg)){
+                    jawaban = msggg;
+                }else if(pertanyaan.includes(msggr)){
+                    jawaban = msggr;
+                }
             }
 
             const echo = { 
                 type: 'text', 
-                text: msggg
+                text: jawaban
             };
             return client.replyMessage(event.replyToken, echo);
         }else{
