@@ -32,7 +32,7 @@ function handleEvent(event){
     var msg = '';
     client.getMessageContent(event.message.id)
     .then((stream) => {
-      stream.setEncoding('utf8');
+    //   stream.setEncoding('utf8');
       stream.on('data', (chunk) => {
           msg += chunk;
       })
@@ -41,15 +41,15 @@ function handleEvent(event){
       })
       stream.on('end', function(){
           console.log(msg);
-        // fs.readFile(msg, function(err, data){
-        //     dropbox.filesUpload({ path: '/test.jpg', contents: data })
-        //     .then(function (response) {
-        //       console.log(response);
-        //     })
-        //     .catch(function (err) {
-        //       console.log(err);
-        //     });
-        // })
+        fs.readFile(msg, function(err, data){
+            dropbox.filesUpload({ path: '/test.jpg', contents: data })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (err) {
+              console.log(err);
+            });
+        })
       })
     //   stream.pipe()
     //   })
