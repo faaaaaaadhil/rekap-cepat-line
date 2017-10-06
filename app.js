@@ -43,26 +43,26 @@ function handleEvent(event){
 
     if(event.message.type == 'text'){
         let keyword = event.message.text.toLowerCase();
-        if(keyword.includes('\saveme') || keyword.includes('\s')){
+        if(keyword.includes('!saveme') || keyword.includes('!s')){
             console.log('save terpanggil');
             checkPengguna(event, true);
-        }else if(keyword.includes('\toko') || keyword.includes('\tk')){
+        }else if(keyword.includes('!toko') || keyword.includes('!tk')){
             console.log('toko terpanggil');
             setToko(event, getContext(event));
-        }else if(keyword.includes('\add') || keyword.includes('\tambah') || keyword.includes('\a') || keyword.includes('\t')){
+        }else if(keyword.includes('!add') || keyword.includes('!tambah') || keyword.includes('!a') || keyword.includes('!t')){
             console.log('setproduk terpanggil');
             setProduct(event, getContext(event));
-        }else if(keyword.includes('\min') || keyword.includes('\laku') || keyword.includes('\m') || keyword.includes('\l')){
+        }else if(keyword.includes('!min') || keyword.includes('!laku') || keyword.includes('!m') || keyword.includes('!l')){
             console.log('minproduk terpanggil');           
             minProduk(event, getContext(event));
-        }else if(keyword.includes('\help') || keyword.includes('\h')){
+        }else if(keyword.includes('!help') || keyword.includes('!h')){
             console.log('help terpanggil');
             pushHelp(event);
         }else{
             console.log('anything terpanggil');
             pushHelp(event);
         }
-        // else if(keyword.includes('\image') || keyword.includes('\pic') || keyword.includes('\img') || keyword.includes('\i')){}
+        // else if(keyword.includes('!image') || keyword.includes('!pic') || keyword.includes('!img') || keyword.includes('!i')){}
     }else{
         console.log('anything terpanggil');
         pushHelp(event);
@@ -311,49 +311,49 @@ function pushHelp(event){
     const echo = { 
         type: 'text', 
         text: 'berikut perintah penggunaan bot \n'+
-        '\h -> melihat perintah penggunaan \n'+
-        '\saveme -> menyimpan profile anda \n'+
-        '\toko {nama toko} -> menyimpan nama toko anda \n'+
-        '\add or \tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok} \n'+
-        '\laku or \min {nama produk} or {np},{jmllaku} -> mengurangi stok produk anda \n'+
-        '\image {kode},{produk},{image} -> menambah image pada produk \n'+
-        '\report {pdf} or {docs} or {excel} -> melihat report penjualan \n'
+        '!h -> melihat perintah penggunaan \n'+
+        '!saveme -> menyimpan profile anda \n'+
+        '!toko {nama toko} -> menyimpan nama toko anda \n'+
+        '!add or !tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok} \n'+
+        '!laku or !min {nama produk} or {np},{jmllaku} -> mengurangi stok produk anda \n'+
+        '!image {kode},{produk},{image} -> menambah image pada produk \n'+
+        '!report {pdf} or {docs} or {excel} -> melihat report penjualan \n'
     };
     return client.replyMessage(event.replyToken, echo);
 }
 
-// data = \saveme,\s,\toko,\tk,\add,\tambah,\a,\t,\min,\laku,\m,\l,\help,\h
+// data = !saveme,!s,!toko,!tk,!add,!tambah,!a,!t,!min,!laku,!m,!l,!help,!h
 function getContext(event){
     let textnya = '';
     let dataText = event.message.text.toLowerCase();
-    if(dataText.includes('\saveme')){
-        textnya = '\saveme';
-    }else if(dataText.includes('\s')){
-        textnya = '\s';
-    }else if(dataText.includes('\toko')){
-        textnya = '\toko';
-    }else if(dataText.includes('\tk')){
-        textnya = '\tk';
-    }else if(dataText.includes('\add')){
-        textnya = '\add';
-    }else if(dataText.includes('\tambah')){
-        textnya = '\tambah';
-    }else if(dataText.includes('\a')){
-        textnya = '\a';
-    }else if(dataText.includes('\t')){
-        textnya = '\t';
-    }else if(dataText.includes('\min')){
-        textnya = '\min';
-    }else if(dataText.includes('\laku')){
-        textnya = '\laku';
-    }else if(dataText.includes('\m')){
-        textnya = '\m';
-    }else if(dataText.includes('\l')){
-        textnya = '\l';
-    }else if(dataText.includes('\help')){
-        textnya = '\help';
-    }else if(dataText.includes('\h')){
-        textnya = '\h';
+    if(dataText.includes('!saveme')){
+        textnya = '!saveme';
+    }else if(dataText.includes('!s')){
+        textnya = '!s';
+    }else if(dataText.includes('!toko')){
+        textnya = '!toko';
+    }else if(dataText.includes('!tk')){
+        textnya = '!tk';
+    }else if(dataText.includes('!add')){
+        textnya = '!add';
+    }else if(dataText.includes('!tambah')){
+        textnya = '!tambah';
+    }else if(dataText.includes('!a')){
+        textnya = '!a';
+    }else if(dataText.includes('!t')){
+        textnya = '!t';
+    }else if(dataText.includes('!min')){
+        textnya = '!min';
+    }else if(dataText.includes('!laku')){
+        textnya = '!laku';
+    }else if(dataText.includes('!m')){
+        textnya = '!m';
+    }else if(dataText.includes('!l')){
+        textnya = '!l';
+    }else if(dataText.includes('!help')){
+        textnya = '!help';
+    }else if(dataText.includes('!h')){
+        textnya = '!h';
     }
     dataText = dataText.trim();
     dataText = dataText.replace(textnya.toString(),'');
