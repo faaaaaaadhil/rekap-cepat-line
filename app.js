@@ -16,6 +16,10 @@ const ProductModel = require('./model/Product');
 
 const dropbox = new drx({ accessToken: setting.dropboxAccessToken});
 
+//configure mongodb
+mongoose.Promise = global.Promise;
+mongoose.connect("mongodb://admin:admin@ds147534.mlab.com:47534/line-bot", {useMongoClient: true});
+
 const client = new line.Client(setting.line);
 
 const app = express();
