@@ -40,15 +40,16 @@ function handleEvent(event){
         console.log(err);
       })
       stream.on('end', function(){
-        fs.readFile(msg, function(err, data){
-            dropbox.filesUpload({ path: '/test.jpg', contents: data })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (err) {
-              console.log(err);
-            });
-        })
+          console.log(msg);
+        // fs.readFile(msg, function(err, data){
+        //     dropbox.filesUpload({ path: '/test.jpg', contents: data })
+        //     .then(function (response) {
+        //       console.log(response);
+        //     })
+        //     .catch(function (err) {
+        //       console.log(err);
+        //     });
+        // })
       })
     //   stream.pipe()
     //   })
