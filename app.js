@@ -83,8 +83,7 @@ function handleEvent(event){
 }
 
 function simiSync(event){
-    console.log("SIMI MULAI SYNCRON");
-    SimiModel.findOne({'jika': { '$regex' : event.message.text, '$options' : 'i' }}, function(err, res){
+    SimiModel.findOne({'jika': new RegExp('^'+event.message.text+'$', "i")}, function(err, res){
         if(res){
             const echo = { 
                 type: 'text', 
@@ -92,7 +91,6 @@ function simiSync(event){
             };
             return client.replyMessage(event.replyToken, echo);
         }else{
-            console.log("ERROR SYNCRON");
             pushHelp(event);
         }
     })
