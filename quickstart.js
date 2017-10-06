@@ -9,10 +9,10 @@ var googleAuth = require('google-auth-library');
 var SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'googledrive.json';
+var TOKEN_PATH = TOKEN_DIR + 'drive-nodejs-quickstart.json';
 
 // Load client secrets from a local file.
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+fs.readFile('googledrive.json', function processClientSecrets(err, content) {
   if (err) {
     console.log('Error loading client secret file: ' + err);
     return;
