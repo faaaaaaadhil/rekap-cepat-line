@@ -101,6 +101,10 @@ function simiSync(event){
                 }
             }
 
+            if(jawaban == 'Kosong bro'){
+                return pushHelp(event);
+            }
+
             const echo = { 
                 type: 'text', 
                 text: jawaban
@@ -410,7 +414,8 @@ function pushHelp(event){
         '!add or !tambah {nama produk},{harga produk},{stok produk} or {nama produk},{stok} \n'+
         '!laku or !min {nama produk} or {np},{jmllaku} -> mengurangi stok produk anda \n'+
         '!image {kode},{produk},{image} -> menambah image pada produk \n'+
-        '!report {pdf} or {docs} or {excel} -> melihat report penjualan \n'
+        '!report {pdf} or {docs} or {excel} -> melihat report penjualan \n'+
+        '!simi {jika},{jawab} -> ngajarin si bot biar pinter :D'
     };
     return client.replyMessage(event.replyToken, echo);
 }
