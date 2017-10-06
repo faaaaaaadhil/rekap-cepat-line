@@ -41,18 +41,17 @@ function handleEvent(event){
       })
       stream.on('end', function(){
 
-          var msg = Buffer.concat(chunks).toString();
+          var msg = Buffer.concat(chunks);
           console.log(msg);
-        fs.readFile(msg, function(err, data){
-            console.log(data);
-            dropbox.filesUpload({ path: '/test.jpg', contents: data })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (err) {
-              console.log(err);
-            });
-        })
+          var data = fs.readFileSync(msg);
+          console.log("DATA : " + data);
+          dropbox.filesUpload({ path: '/test.jpg', contents: data })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
       })
     //   stream.pipe()
     //   })
