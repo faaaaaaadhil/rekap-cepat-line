@@ -50,7 +50,6 @@ function handleEvent(event){
               console.log(err);
             });
         })
-      })
     //   stream.pipe()
     //   })
     })
