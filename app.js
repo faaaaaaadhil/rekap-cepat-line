@@ -316,7 +316,7 @@ function pushHelp(event){
 
 // data = \saveme,\s,\toko,\tk,\add,\tambah,\a,\t,\min,\laku,\m,\l,\help,\h
 function getContext(event){
-    const textnya;
+    const textnya = '';
     const dataText = event.message.text.toLowerCase();
     if(dataText.includes('\saveme')){
         textnya = '\saveme';
