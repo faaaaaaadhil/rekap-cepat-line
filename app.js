@@ -37,7 +37,7 @@ function handleEvent(event){
     console.log('Dropbox Status : ' + dropbox);
     console.log('Line Status : ' + line);
     console.log('Event Log :' + event);
-
+    console.log('Mongoose Status : ' + mongoose);
     //indentifikasi pengguna baru atau bukan
     checkPengguna(event, false);
 
@@ -81,7 +81,8 @@ function checkPengguna(event, type){
             .then((profile) => {
                 let pictureUrl = profile.pictureUrl;
                 let statusMessage = profile.statusMessage;
-                let randomKode = Math.random(1000,9999);
+                let randomKode = Math.floor(100000 + Math.random() * 900000)
+                randomKode = randomKode.toString().substring(0,4);
         
                 if(pictureUrl == undefined){
                     pictureUrl = '';
@@ -126,7 +127,8 @@ function checkPengguna(event, type){
             .then((profile) => {
                 let pictureUrl = profile.pictureUrl;
                 let statusMessage = profile.statusMessage;
-                let randomKode = Math.random(1000,9999);
+                let randomKode = Math.floor(100000 + Math.random() * 900000)
+                randomKode = randomKode.toString().substring(0,4);
 
                 if(pictureUrl == undefined){
                     pictureUrl = '';
